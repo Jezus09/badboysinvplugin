@@ -1,0 +1,20 @@
+{
+  "Database": {
+    "ConnectionString": "Host=ep-bold-mode-agrmthsz-pooler.c-2.eu-central-1.aws.neon.tech;Database=neondb;Username=neondb_owner;Password=npg_AO5zdbmUuLH8;SSL Mode=Require;Trust Server Certificate=true",
+    "TableName": "player_coins",
+    "Enabled": true
+  },
+  "Rewards": {
+    "Kill": 0.20,
+    "RoundWin": 0.2,
+    "Mvp": 1.0
+  },
+  "Settings": {
+    "EnableCoinSystem": true,
+    "EnableKillRewards": true,
+    "EnableRoundWinRewards": true,
+    "EnableMvpRewards": true,
+    "AnnounceRewards": true,
+    "SaveInterval": 30
+  }
+}

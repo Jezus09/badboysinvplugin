@@ -1,0 +1,23 @@
+{
+  "invsim.announce": "Elérheted az inventory-t itt: {0}.",
+  "invsim.ws_new": "Az inventory-d hamarosan frissítve lesz.",
+  "invsim.ws_in_progress": "Az inventory-d frissítése folyamatban...",
+  "invsim.ws_cooldown": "Jelenleg nem frissítheted az inventory-t. Várj {0} másodpercet.",
+  "invsim.ws_completed": "Az inventory-d frissítve lett.",
+  "invsim.spray_cooldown": "Jelenleg nem sprézelhetsz. Várj {0} másodpercet.",
+  "invsim.login_in_progress": "Hitelesítés folyamatban az inventory-val...",
+  "invsim.login": "Látogasd meg {0} az inventory-d megtekintéséhez.",
+  "invsim.login_failed": "Nem sikerült hitelesíteni az inventory-val, próbáld újra később.",
+  "coins.kill_reward": "${0} dollárt kaptál a killért! Egyenleg: ${1}",
+  "coins.headshot_bonus": "Headshot bónusz! +${0}",
+  "coins.knife_bonus": "Kés kill bónusz! +${0}",
+  "coins.grenade_bonus": "Gránát kill bónusz! +${0}",
+  "coins.round_win": "${0} dollárt kaptál a kör megnyeréséért! Egyenleg: ${1}",
+  "coins.mvp_reward": "${0} dollárt kaptál az MVP-ért! Egyenleg: ${1}",
+  "coins.balance": "Egyenleged: ${0}",
+  "coins.stats": "Statisztikák: {0} kill, {1} halál, {2} megnyert kör, {3} MVP",
+  "coins.top_players": "Legtöbb dolláros játékosok:",
+  "coins.admin_give": "Egy admin adott neked ${0} dollárt! Új egyenleg: ${1}",
+  "coins.admin_set": "Egy admin beállította az egyenleged ${0} dollárra!",
+  "coins.admin_remove": "Egy admin elvett ${0} dollárt a fiókodból. Új egyenleg: ${1}"
+}

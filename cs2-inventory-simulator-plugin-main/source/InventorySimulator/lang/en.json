@@ -1,0 +1,23 @@
+{
+  "invsim.announce": "Access your inventory at {0}.",
+  "invsim.ws_new": "Your inventory will be refreshed shortly.",
+  "invsim.ws_in_progress": "Your inventory is being refreshed.",
+  "invsim.ws_cooldown": "You cannot refresh your inventory right now. Please wait {0} seconds.",
+  "invsim.ws_completed": "Your inventory have been refreshed.",
+  "invsim.spray_cooldown": "You cannot spray right now. Please wait {0} seconds.",
+  "invsim.login_in_progress": "Trying to authenticate to your inventory...",
+  "invsim.login": "Access {0} to view your inventory.",
+  "invsim.login_failed": "Unable to authenticate to your inventory, please try again later.",
+  "coins.kill_reward": "You earned {0} coins for the kill! Balance: {1}",
+  "coins.headshot_bonus": "Headshot bonus! +{0} coins",
+  "coins.knife_bonus": "Knife kill bonus! +{0} coins",
+  "coins.grenade_bonus": "Grenade kill bonus! +{0} coins",
+  "coins.round_win": "You earned {0} coins for winning the round! Balance: {1}",
+  "coins.mvp_reward": "You earned {0} coins for MVP! Balance: {1}",
+  "coins.balance": "Your balance: {0} coins",
+  "coins.stats": "Stats: {0} kills, {1} deaths, {2} round wins, {3} MVPs",
+  "coins.top_players": "Top Players by Coins:",
+  "coins.admin_give": "An admin gave you {0} coins! New balance: {1}",
+  "coins.admin_set": "An admin set your coin balance to {0} coins!",
+  "coins.admin_remove": "An admin removed {0} coins from your account. New balance: {1}"
+}

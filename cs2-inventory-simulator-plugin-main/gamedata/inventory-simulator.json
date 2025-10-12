@@ -1,0 +1,50 @@
+{
+  "CAttributeList_SetOrAddAttributeValueByName": {
+    "signatures": {
+      "library": "server",
+      "windows": "40 53 55 41 56 48 81 EC ? ? ? ? 0F 29 74 24",
+      "linux": "55 48 89 E5 41 57 41 56 49 89 FE 41 55 41 54 53 48 89 F3 48 83 EC ? F3 0F 11 85"
+    }
+  },
+  "CCSPlayerPawn_IsAbleToApplySpray": {
+    "signatures": {
+      "library": "server",
+      "windows": "48 8B C4 48 89 58 ? 48 89 70 ? 48 89 78 ? 55 48 8D A8 ? ? ? ? 48 81 EC ? ? ? ? 4C 89 70",
+      "linux": "55 48 89 E5 41 57 41 56 49 89 D6 41 55 48 8D 95 ? ? ? ? 49 89 CD"
+    }
+  },
+  "CCSPlayerController_ProcessUsercmds": {
+    "signatures": {
+      "library": "server",
+      "windows": "48 8B C4 44 88 48 20 44 89 40 18 48 89 50 10 53",
+      "linux": "55 48 89 E5 41 57 41 56 41 55 41 54 53 48 89 FB 48 83 EC ? 89 4D"
+    }
+  },
+  "CCSPlayerController_UpdateSelectTeamPreview": {
+    "signatures": {
+      "library": "server",
+      "windows": "89 54 24 ? 55 48 81 EC",
+      "linux": "55 48 89 E5 41 57 41 56 41 55 41 54 53 48 89 FB 48 83 EC ? 89 75 ? F6 87"
+    }
+  },
+  "CServerSideClientBase_SetSignonState": {
+    "signatures": {
+      "library": "engine2",
+      "windows": "40 57 48 83 EC ? 48 8B F9 48 89 74 24",
+      "linux": "55 89 F0 48 89 E5 41 57 41 56 41 55 41 54 41 89 F4"
+    }
+  },
+  "CServerSideClientBase_Connect": {
+    "signatures": {
+      "library": "engine2",
+      "windows": "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 41 54 41 55 41 56 41 57 48 83 EC ? 4C 8B BC 24",
+      "linux": "55 48 89 E5 41 57 49 89 FF 41 56 41 89 CE 41 55 41 BD"
+    }
+  },
+  "CCSPlayer_WeaponServices_DropWeapon": {
+    "offsets": {
+      "windows": 23,
+      "linux": 24
+    }
+  }
+}
