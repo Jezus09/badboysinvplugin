@@ -30,8 +30,6 @@ public partial class InventorySimulator
     public readonly FakeConVar<int> invsim_spray_cooldown = new("invsim_spray_cooldown", "Cooldown in seconds between player sprays.", 30);
     public readonly FakeConVar<bool> invsim_compatibility_mode = new("invsim_compatibility_mode", "Whether we are in compatibility mode. (e.g. with CS2Fixes.)", false);
     public readonly FakeConVar<string> invsim_apikey = new("invsim_apikey", "Inventory Simulator API's key.", "");
-    public readonly FakeConVar<bool> invsim_autorefresh = new("invsim_autorefresh", "Whether to automatically refresh player inventories.", true);
-    public readonly FakeConVar<int> invsim_recheck_interval = new("invsim_recheck_interval", "Interval in seconds between automatic inventory refresh checks.", 10);
     public readonly FakeConVar<string> invsim_hostname = new("invsim_hostname", "Inventory Simulator API's hostname.", "cs2badboysinv.koyeb.app");
     public readonly FakeConVar<string> invsim_protocol = new("invsim_protocol", "Inventory Simulator API's protocol.", "https");
     public readonly FakeConVar<bool> invsim_wslogin = new("invsim_wslogin", "Not recommended, but allows authenticating into Inventory Simulator and printing login URL to the player.", false);

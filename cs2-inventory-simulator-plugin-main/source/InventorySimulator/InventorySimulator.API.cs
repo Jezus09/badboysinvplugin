@@ -89,174 +89,76 @@ public partial class InventorySimulator
 
     public async Task FetchPlayerInventory(ulong steamId, bool force = false)
     {
-        var existing = PlayerInventoryManager.TryGetValue(steamId, out var i) ? i : null;
-
-        if (!force && existing != null)
+        // Ha már folyamatban van lekérés, akkor nem indítunk újat
+        if (FetchingPlayerInventory.ContainsKey(steamId))
             return;
 
-        if (FetchingPlayerInventory.ContainsKey(steamId))
+        // Mindig elmentjük a létező inventory cache-t
+        var existingCache = PlayerInventoryManager.TryGetValue(steamId, out var existing) ? 
+            existing?.CachedWeaponEconItems : null;
+
+        // Ha nem force és van már inventory, akkor nem kérjük le újra
+        if (!force && existing != null)
             return;
 
         FetchingPlayerInventory.TryAdd(steamId, true);
 
-        for (var attempt = 0; attempt < 3; attempt++)
+        try 
         {
-            try
+            for (var attempt = 0; attempt < 3; attempt++)
             {
-                var playerInventory = await Fetch<PlayerInventory>($"/api/equipped/v3/{steamId}.json", true);
-
-                if (playerInventory != null)
+                try
                 {
-                    if (existing != null)
-                        playerInventory.CachedWeaponEconItems = existing.CachedWeaponEconItems;
-                    PlayerCooldownManager[steamId] = Now();
-                    AddPlayerInventory(steamId, playerInventory);
+                    var playerInventory = await Fetch<PlayerInventory>($"/api/equipped/v3/{steamId}.json", true);
+
+                    if (playerInventory != null)
+                    {
+                        // Visszaállítjuk a cache-t ha volt
+                        if (existingCache != null)
+                            playerInventory.CachedWeaponEconItems = existingCache;
+                        
+                        PlayerCooldownManager[steamId] = Now();
+                        AddPlayerInventory(steamId, playerInventory);
+                        break;
+                    }
                 }
-
-                break;
-            }
-            catch
-            {
-                // Try again to fetch data (up to 3 times).
-            }
-        }
-
-        FetchingPlayerInventory.Remove(steamId, out var _);
-    }
-
-    private bool HasInventoryChanged(PlayerInventory? oldInv, PlayerInventory? newInv)
-    {
-        if (oldInv == null || newInv == null) return true;
-
-        // Debug log for comparison
-        Console.WriteLine("[InventorySimulator] Comparing inventories:");
-        Console.WriteLine($"Old CTWeapons count: {oldInv.CTWeapons.Count}, New: {newInv.CTWeapons.Count}");
-        Console.WriteLine($"Old TWeapons count: {oldInv.TWeapons.Count}, New: {newInv.TWeapons.Count}");
-        Console.WriteLine($"Old Knives count: {oldInv.Knives.Count}, New: {newInv.Knives.Count}");
-        
-        // Individual item comparison for each weapon type
-        foreach (var pair in oldInv.CTWeapons)
-        {
-            if (!newInv.CTWeapons.ContainsKey(pair.Key) || 
-                newInv.CTWeapons[pair.Key].Def != pair.Value.Def)
-            {
-                Console.WriteLine($"[InventorySimulator] CTWeapon changed: {pair.Key}");
-                return true;
+                catch
+                {
+                    // Ha hiba van, próbáljuk újra (max 3-szor)
+                    if (attempt == 2)
+                        Logger.LogError($"Failed to fetch inventory for {steamId} after 3 attempts");
+                }
             }
         }
-        foreach (var pair in oldInv.TWeapons)
+        finally
         {
-            if (!newInv.TWeapons.ContainsKey(pair.Key) || 
-                newInv.TWeapons[pair.Key].Def != pair.Value.Def)
-            {
-                Console.WriteLine($"[InventorySimulator] TWeapon changed: {pair.Key}");
-                return true;
-            }
+            FetchingPlayerInventory.Remove(steamId, out var _);
         }
-        foreach (var pair in oldInv.Knives)
-        {
-            if (!newInv.Knives.ContainsKey(pair.Key) || 
-                newInv.Knives[pair.Key].Def != pair.Value.Def)
-            {
-                Console.WriteLine($"[InventorySimulator] Knife changed: {pair.Key}");
-                return true;
-            }
         }
-        foreach (var pair in oldInv.Gloves)
-        {
-            if (!newInv.Gloves.ContainsKey(pair.Key) || 
-                newInv.Gloves[pair.Key].Def != pair.Value.Def)
-            {
-                Console.WriteLine($"[InventorySimulator] Glove changed: {pair.Key}");
-                return true;
-            }
-        }
-        foreach (var pair in oldInv.Agents)
-        {
-            if (!newInv.Agents.ContainsKey(pair.Key) || 
-                newInv.Agents[pair.Key].Def != pair.Value.Def)
-            {
-                Console.WriteLine($"[InventorySimulator] Agent changed: {pair.Key}");
-                return true;
-            }
-        }
-
-        // Check MusicKit
-        if ((oldInv.MusicKit == null) != (newInv.MusicKit == null))
-        {
-            Console.WriteLine("[InventorySimulator] MusicKit presence changed");
-            return true;
-        }
-        if (oldInv.MusicKit != null && newInv.MusicKit != null && 
-            oldInv.MusicKit.Def != newInv.MusicKit.Def)
-        {
-            Console.WriteLine("[InventorySimulator] MusicKit definition changed");
-            return true;
-        }
-
-        // Check Graffiti
-        if ((oldInv.Graffiti == null) != (newInv.Graffiti == null))
-        {
-            Console.WriteLine("[InventorySimulator] Graffiti presence changed");
-            return true;
-        }
-        if (oldInv.Graffiti != null && newInv.Graffiti != null && 
-            oldInv.Graffiti.Def != newInv.Graffiti.Def)
-        {
-            Console.WriteLine("[InventorySimulator] Graffiti definition changed");
-            return true;
-        }
-
-        Console.WriteLine("[InventorySimulator] No changes detected");
-        return false;
-    }
 
     public async void RefreshPlayerInventory(CCSPlayerController player, bool force = false)
     {
-        try 
+        if (!force)
         {
-            var isFirstLoad = !PlayerInventoryManager.ContainsKey(player.SteamID);
-            
-            Console.WriteLine($"[InventorySimulator] Starting refresh for SteamID: {player.SteamID}");
-            Console.WriteLine($"[InventorySimulator] IsFirstLoad: {isFirstLoad}, Force: {force}");
-            
-            var oldInventory = GetPlayerInventory(player);
-            await FetchPlayerInventory(player.SteamID, force);
-            
+            await FetchPlayerInventory(player.SteamID);
             Server.NextFrame(() =>
             {
-                if (!player.IsValid) return;
-
-                var newInventory = GetPlayerInventory(player);
-                bool hasChanged = HasInventoryChanged(oldInventory, newInventory);
-                
-                Console.WriteLine($"[InventorySimulator] Refresh completed - HasChanged: {hasChanged}");
-                
-                // Mindig alkalmazzuk, ha bármi változás van
-                if (isFirstLoad || hasChanged || force)
-                {
+                if (player.IsValid)
                     GiveOnLoadPlayerInventory(player);
-                    GiveOnRefreshPlayerInventory(player, newInventory);
-                    
-                    if (isFirstLoad)
-                    {
-                        player.PrintToChat(" \x04[Inventory] \x01Az inventory-d betöltve.");
-                    }
-                    else if (hasChanged)
-                    {
-                        player.PrintToChat(" \x04[Inventory] \x01Az inventory-d frissítve lett.");
-                    }
-                    else if (force)
-                    {
-                        player.PrintToChat(" \x04[Inventory] \x01Nincs változás az inventory-dban.");
-                    }
-                }
             });
+            return;
         }
-        catch (Exception ex)
+        var oldInventory = GetPlayerInventory(player);
+        await FetchPlayerInventory(player.SteamID, true);
+        Server.NextFrame(() =>
         {
-            Console.WriteLine($"[InventorySimulator] Error in RefreshPlayerInventory: {ex}");
-        }
+            if (player.IsValid)
+            {
+                player.PrintToChat(Localizer["invsim.ws_completed"]);
+                GiveOnLoadPlayerInventory(player);
+                GiveOnRefreshPlayerInventory(player, oldInventory);
+            }
+        });
     }
 
     public async Task Send(string pathname, object data)

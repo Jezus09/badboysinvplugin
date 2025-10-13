@@ -32,9 +32,6 @@ public partial class InventorySimulator : BasePlugin
         RegisterEventHandler<EventRoundMvp>(OnRoundMvpPre, HookMode.Pre);
         RegisterEventHandler<EventPlayerDisconnect>(OnPlayerDisconnect);
 
-        // HTTP szerver indítása
-        StartHttpServer();
-
         // Coin system events
         RegisterEventHandler<EventRoundEnd>(OnRoundEnd);
 
@@ -49,13 +46,6 @@ public partial class InventorySimulator : BasePlugin
 
         invsim_spray_on_use.ValueChanged += OnInvSimSprayOnUseChange;
         OnInvSimSprayOnUseChange(null, invsim_spray_on_use.Value);
-
-        // AutoRefresh eseménykezelők
-        invsim_autorefresh.ValueChanged += OnAutoRefreshSettingChanged;
-        OnAutoRefreshSettingChanged(null, invsim_autorefresh.Value);
-
-        invsim_recheck_interval.ValueChanged += OnRecheckIntervalChanged;
-        OnRecheckIntervalChanged(null, invsim_recheck_interval.Value);
 
         // Initialize coin system
         InitializeCoinSystem();

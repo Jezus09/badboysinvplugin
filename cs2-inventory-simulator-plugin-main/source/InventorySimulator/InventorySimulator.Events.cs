@@ -32,11 +32,7 @@ public partial class InventorySimulator
             PlayerOnTickInventoryManager[player.SteamID] = (player, tuple.Item2);
         // Only fetch inventory if not already present
         if (!PlayerInventoryManager.ContainsKey(player.SteamID))
-        {
-            // Első csatlakozásnál mindenképp betöltjük és alkalmazzuk az inventoryt
-            // force = true, hogy biztosan betöltse
-            RefreshPlayerInventory(player, true);
-        }
+            RefreshPlayerInventory(player);
     }
 
     public HookResult OnRoundPrestart(EventRoundPrestart @event, GameEventInfo _)

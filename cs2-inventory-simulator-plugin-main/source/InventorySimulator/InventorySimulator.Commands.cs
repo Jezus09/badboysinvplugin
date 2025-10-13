@@ -36,8 +36,8 @@ public partial class InventorySimulator
             return;
         }
 
-        // Csak a frissítést indítjuk, az üzeneteket a RefreshPlayerInventory kezeli
         RefreshPlayerInventory(player, true);
+        player.PrintToChat(Localizer["invsim.ws_new"]);
     }
 
     [ConsoleCommand("css_spray", "Spray player's graffiti.")]
