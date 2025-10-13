@@ -103,7 +103,7 @@ public partial class InventorySimulator
 
         // Get winning team players
         var winningTeam = @event.Winner;
-        var winners = Utilities.GetPlayers()
+    var winners = InventorySimulator.GetPlayers()
             .Where(p => IsPlayerHumanAndValid(p) && p.TeamNum == winningTeam)
             .ToList();
 

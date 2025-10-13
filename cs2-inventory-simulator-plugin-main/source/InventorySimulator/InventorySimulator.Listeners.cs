@@ -37,7 +37,7 @@ public partial class InventorySimulator
                 if (!weapon.IsValid || weapon.OriginalOwnerXuidLow == 0)
                     return;
 
-                var player = Utilities.GetPlayerFromSteamId(weapon.OriginalOwnerXuidLow);
+                var player = InventorySimulator.GetPlayerFromSteamId(weapon.OriginalOwnerXuidLow);
                 if (player == null || !IsPlayerHumanAndValid(player))
                     return;
 
@@ -55,7 +55,7 @@ public partial class InventorySimulator
                 if (!sprayDecal.IsValid || sprayDecal.AccountID == 0)
                     return;
 
-                var player = Utilities.GetPlayerFromSteamId(sprayDecal.AccountID);
+                var player = InventorySimulator.GetPlayerFromSteamId(sprayDecal.AccountID);
                 if (player == null || !IsPlayerHumanAndValid(player))
                     return;
 

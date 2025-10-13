@@ -193,7 +193,7 @@ public partial class InventorySimulator
 
         Server.NextFrame(() =>
         {
-            var player = Utilities.GetPlayerFromSteamId(userId);
+            var player = InventorySimulator.GetPlayerFromSteamId(userId);
             if (response == null)
             {
                 player?.PrintToChat(Localizer["invsim.login_failed"]);

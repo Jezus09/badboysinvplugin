@@ -331,7 +331,7 @@ public partial class InventorySimulator
         PlayerSprayCooldownManager[player.SteamID] = Now();
         var endPos = Vector3toVector(trace->EndPos);
         var normalPos = Vector3toVector(trace->Normal);
-        var sprayDecal = Utilities.CreateEntityByName<CPlayerSprayDecal>("player_spray_decal");
+    var sprayDecal = Utilities.CreateEntityByName<CPlayerSprayDecal>("player_spray_decal");
         if (sprayDecal != null)
         {
             sprayDecal.EndPos.Add(endPos);
@@ -377,7 +377,7 @@ public partial class InventorySimulator
         {
             if (teamPreview.Xuid == 0 || (player != null && player.SteamID != teamPreview.Xuid))
                 continue;
-            player ??= Utilities.GetPlayerFromSteamId(teamPreview.Xuid);
+            player ??= InventorySimulator.GetPlayerFromSteamId(teamPreview.Xuid);
             if (player == null || !IsPlayerHumanAndValid(player))
                 continue;
             var inventory = GetPlayerInventory(player);

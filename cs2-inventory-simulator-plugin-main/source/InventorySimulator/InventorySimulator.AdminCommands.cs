@@ -41,7 +41,7 @@ public partial class InventorySimulator
             return;
         }
 
-        var target = Utilities.GetPlayers().FirstOrDefault(p => 
+    var target = InventorySimulator.GetPlayers().FirstOrDefault(p => 
             p != null && IsPlayerHumanAndValid(p) && 
             (p.PlayerName.Contains(targetName, StringComparison.OrdinalIgnoreCase) || 
              p.SteamID.ToString().Contains(targetName)));
