@@ -1,6 +1,6 @@
 {
   "Database": {
-    "ConnectionString": "Host=ep-bold-mode-agrmthsz-pooler.c-2.eu-central-1.aws.neon.tech;Database=neondb;Username=neondb_owner;Password=npg_AO5zdbmUuLH8;SSL Mode=Require;Trust Server Certificate=true",
+    "ConnectionString": "Host=o0kcg4soo84sg8g4o4k8cwo4;Port=5432;Database=postgres;Username=CS;Password=Cristike365!;SSL Mode=Prefer;Trust Server Certificate=true",
     "TableName": "player_coins",
     "Enabled": true
   },
