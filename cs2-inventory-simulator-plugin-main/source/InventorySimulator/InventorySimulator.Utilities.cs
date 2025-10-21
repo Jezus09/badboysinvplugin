@@ -129,7 +129,7 @@ public partial class InventorySimulator
     /// </summary>
     public static CCSPlayerController? GetPlayerFromSteamId(ulong steamId)
     {
-        return GetPlayers().FirstOrDefault(p => p != null && p.IsValid && p.SteamID == steamId);
+        return CounterStrikeSharp.API.Utilities.GetPlayers().FirstOrDefault(p => p != null && p.IsValid && p.SteamID == steamId);
     }
 }
 }
