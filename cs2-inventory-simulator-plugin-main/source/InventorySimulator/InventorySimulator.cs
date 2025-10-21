@@ -49,11 +49,15 @@ public partial class InventorySimulator : BasePlugin
 
         // Initialize coin system
         InitializeCoinSystem();
+
+        // Start webhook listener
+        StartWebhookListener();
     }
 
     public override void Unload(bool hotReload)
     {
         _coinSystem?.Dispose();
+        StopWebhookListener();
     }
 
     private void InitializeCoinSystem()

@@ -50,14 +50,18 @@ public partial class InventorySimulator
 			var data = JsonSerializer.Deserialize<RefreshInventoryRequest>(body);
 			if (data?.SteamId != null && ulong.TryParse(data.SteamId, out var steamId))
 			{
-				var player = InventorySimulator.GetPlayerFromSteamId(steamId);
-				if (player != null && player.IsValid)
+				// Schedule the refresh on the main server thread
+				CounterStrikeSharp.API.Server.NextFrame(() =>
 				{
-					RefreshPlayerInventory(player, true);
-					context.Response.StatusCode = 200;
-					context.Response.Close();
-					return;
-				}
+					var player = InventorySimulator.GetPlayerFromSteamId(steamId);
+					if (player != null && player.IsValid)
+					{
+						RefreshPlayerInventory(player, true);
+					}
+				});
+				context.Response.StatusCode = 200;
+				context.Response.Close();
+				return;
 			}
 			context.Response.StatusCode = 400;
 			context.Response.Close();
