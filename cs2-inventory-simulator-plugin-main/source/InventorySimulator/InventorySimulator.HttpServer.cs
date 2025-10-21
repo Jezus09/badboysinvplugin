@@ -185,15 +185,30 @@ public partial class InventorySimulator
 			Logger.LogInformation($"[Webhook] Broadcasting message: {message}");
 
 			// Broadcast to all players
-			var players = GetPlayers();
+			var players = GetPlayers().ToList();
+			Logger.LogInformation($"[Webhook] Found {players.Count} total players");
+
 			var playerCount = 0;
 			foreach (var player in players)
 			{
-				if (player != null && player.IsValid && !player.IsBot)
+				if (player == null)
 				{
-					player.PrintToChat(message);
-					playerCount++;
+					Logger.LogWarning($"[Webhook] Player is null");
+					continue;
 				}
+
+				if (!player.IsValid)
+				{
+					Logger.LogWarning($"[Webhook] Player {player.PlayerName} is not valid");
+					continue;
+				}
+
+				var isBot = player.IsBot || player.IsHLTV;
+				Logger.LogInformation($"[Webhook] Player: {player.PlayerName}, IsBot: {isBot}, Connected: {player.Connected}, Team: {player.Team}");
+
+				// Don't filter bots - send to everyone!
+				player.PrintToChat(message);
+				playerCount++;
 			}
 			Logger.LogInformation($"[Webhook] Broadcast sent to {playerCount} players");
 		}
