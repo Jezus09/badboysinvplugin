@@ -33,6 +33,9 @@ public partial class InventorySimulator
         // Only fetch inventory if not already present
         if (!PlayerInventoryManager.ContainsKey(player.SteamID))
             RefreshPlayerInventory(player);
+
+        // Check for daily login reward
+        _coinSystem?.CheckDailyLoginReward(player);
     }
 
     public HookResult OnRoundPrestart(EventRoundPrestart @event, GameEventInfo _)
@@ -60,25 +63,36 @@ public partial class InventorySimulator
     {
         var attacker = @event.Attacker;
         var victim = @event.Userid;
+        var assister = @event.Assister;
+
         if (attacker != null && victim != null)
         {
             var isValidAttacker = (IsPlayerHumanAndValid(attacker) && IsPlayerPawnValid(attacker));
             var isValidVictim = (invsim_stattrak_ignore_bots.Value ? IsPlayerHumanAndValid(victim) : IsPlayerValid(victim)) && IsPlayerPawnValid(victim);
-            
+
             // Coin system esetében BOT-ok is validek
             var isValidVictimForCoins = IsPlayerValid(victim) && IsPlayerPawnValid(victim);
-            
+
             if (isValidAttacker && isValidVictim)
             {
                 GivePlayerWeaponStatTrakIncrement(attacker, @event.Weapon, @event.WeaponItemid);
             }
-            
+
             // Coin reward külön logikával (BOT-ok is számítanak)
             if (isValidAttacker && isValidVictimForCoins)
             {
                 // Headshot ellenőrzés
                 bool isHeadshot = @event.Headshot;
                 _coinSystem?.AddKillReward(attacker, isHeadshot);
+
+                // Kill streak és speciális ölés tracking
+                _coinSystem?.HandleKillForStreak(attacker, victim, isHeadshot, @event.Weapon);
+            }
+
+            // Assist reward
+            if (assister != null && IsPlayerHumanAndValid(assister) && IsPlayerPawnValid(assister) && _coinSystem != null)
+            {
+                _coinSystem.AddAssistReward(assister);
             }
         }
 
@@ -126,8 +140,45 @@ public partial class InventorySimulator
             ClearPlayerServerSideClient(player.UserId);
             RemovePlayerInventory(player.SteamID);
             ClearInventoryManager();
-            
+
             // Coin system - player disconnecting (simple system doesn't need to save)
+        }
+
+        return HookResult.Continue;
+    }
+
+    public HookResult OnBombPlanted(EventBombPlanted @event, GameEventInfo _)
+    {
+        var player = @event.Userid;
+        if (player != null && IsPlayerHumanAndValid(player) && _coinSystem != null)
+        {
+            _coinSystem.AddBombPlantReward(player);
+        }
+
+        return HookResult.Continue;
+    }
+
+    public HookResult OnBombDefused(EventBombDefused @event, GameEventInfo _)
+    {
+        var player = @event.Userid;
+        if (player != null && IsPlayerHumanAndValid(player) && _coinSystem != null)
+        {
+            _coinSystem.AddBombDefuseReward(player);
+        }
+
+        return HookResult.Continue;
+    }
+
+    public HookResult OnPlayerHurt(EventPlayerHurt @event, GameEventInfo _)
+    {
+        var attacker = @event.Attacker;
+        var victim = @event.Userid;
+
+        // Track assists - if damage dealt but not killing blow
+        if (attacker != null && victim != null && attacker != victim &&
+            IsPlayerHumanAndValid(attacker) && IsPlayerHumanAndValid(victim) && _coinSystem != null)
+        {
+            _coinSystem.UpdatePlayerActivity(attacker.SteamID);
         }
 
         return HookResult.Continue;

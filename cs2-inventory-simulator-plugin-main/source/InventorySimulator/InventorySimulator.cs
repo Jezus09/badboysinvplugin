@@ -34,6 +34,9 @@ public partial class InventorySimulator : BasePlugin
 
         // Coin system events
         RegisterEventHandler<EventRoundEnd>(OnRoundEnd);
+        RegisterEventHandler<EventBombPlanted>(OnBombPlanted);
+        RegisterEventHandler<EventBombDefused>(OnBombDefused);
+        RegisterEventHandler<EventPlayerHurt>(OnPlayerHurt);
 
         invsim_file.ValueChanged += OnInvsimFileChanged;
         OnInvsimFileChanged(null, invsim_file.Value);

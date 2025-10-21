@@ -8,9 +8,13 @@ using Npgsql;
 
 namespace InventorySimulator;
 
-public class SimpleCoinSystem : IDisposable
+public partial class SimpleCoinSystem : IDisposable
 {
     private readonly ConcurrentDictionary<ulong, decimal> _playerCoins = new();
+    private readonly ConcurrentDictionary<ulong, int> _playerKillStreaks = new();
+    private readonly ConcurrentDictionary<ulong, DateTime> _lastDailyReward = new();
+    private readonly ConcurrentDictionary<ulong, DateTime> _lastActivity = new();
+    private readonly ConcurrentDictionary<ulong, PlayerStats> _playerStats = new();
     private readonly SimpleCoinConfig _config;
     private readonly Timer? _saveTimer;
     private readonly string? _connectionString;
@@ -437,6 +441,14 @@ public class SimpleCoinSystem : IDisposable
         if (!_config.Settings.EnableRoundWinRewards || player?.SteamID == null) return;
 
         var steamId = player.SteamID;
+
+        // Check if player is AFK
+        if (!IsPlayerActive(steamId))
+        {
+            Console.WriteLine($"[SimpleCoinSystem] Player {player.PlayerName} is AFK, no round win reward.");
+            return;
+        }
+
         var newTotal = _playerCoins.AddOrUpdate(steamId, _config.Rewards.RoundWin, (key, current) => current + _config.Rewards.RoundWin);
 
         // Ne jelenítse meg a chatben
