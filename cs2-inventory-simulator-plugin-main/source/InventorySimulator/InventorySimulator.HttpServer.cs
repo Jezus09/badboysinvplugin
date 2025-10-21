@@ -1,6 +1,7 @@
 using System.Net;
 using System.Text.Json;
 using System.Threading;
+using System.Threading.Tasks;
 using CounterStrikeSharp.API.Core;
 using Microsoft.Extensions.Logging;
 
@@ -152,10 +153,13 @@ public partial class InventorySimulator
 			if (data?.PlayerName != null && data?.ItemName != null)
 			{
 				Logger.LogInformation($"[Webhook] Broadcasting case opening: {data.PlayerName} - {data.ItemName}");
-				// Schedule the broadcast on the main server thread
-				CounterStrikeSharp.API.Server.NextFrame(() =>
+				// Schedule the broadcast on the main server thread with 5 second delay
+				Task.Delay(5000).ContinueWith(_ =>
 				{
-					BroadcastCaseOpening(data.PlayerName, data.ItemName, data.Rarity, data.StatTrak);
+					CounterStrikeSharp.API.Server.NextFrame(() =>
+					{
+						BroadcastCaseOpening(data.PlayerName, data.ItemName, data.Rarity, data.StatTrak);
+					});
 				});
 				context.Response.StatusCode = 200;
 				context.Response.Close();
