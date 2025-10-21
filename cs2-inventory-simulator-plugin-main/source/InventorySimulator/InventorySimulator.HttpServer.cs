@@ -184,8 +184,8 @@ public partial class InventorySimulator
 
 			Logger.LogInformation($"[Webhook] Broadcasting message: {message}");
 
-			// Broadcast to all players
-			var players = GetPlayers().ToList();
+			// Use Utilities.GetPlayers() directly instead of our custom GetPlayers()
+			var players = CounterStrikeSharp.API.Utilities.GetPlayers().ToList();
 			Logger.LogInformation($"[Webhook] Found {players.Count} total players");
 
 			var playerCount = 0;
