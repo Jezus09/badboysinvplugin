@@ -76,7 +76,9 @@ public partial class InventorySimulator
             // Coin reward külön logikával (BOT-ok is számítanak)
             if (isValidAttacker && isValidVictimForCoins)
             {
-                _coinSystem?.AddKillReward(attacker);
+                // Headshot ellenőrzés
+                bool isHeadshot = @event.Headshot;
+                _coinSystem?.AddKillReward(attacker, isHeadshot);
             }
         }
 

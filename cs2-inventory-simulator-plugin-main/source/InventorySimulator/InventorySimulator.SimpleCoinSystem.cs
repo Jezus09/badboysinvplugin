@@ -398,21 +398,38 @@ public class SimpleCoinSystem : IDisposable
     }
 
 
-    public void AddKillReward(CCSPlayerController player)
+    public void AddKillReward(CCSPlayerController player, bool isHeadshot = false)
     {
         if (!_config.Settings.EnableKillRewards || player?.SteamID == null) return;
 
         var steamId = player.SteamID;
-        var newTotal = _playerCoins.AddOrUpdate(steamId, _config.Rewards.Kill, (key, current) => current + _config.Rewards.Kill);
+
+        // Random összeg generálása
+        var random = new Random();
+        double reward;
+
+        if (isHeadshot)
+        {
+            // Headshot: 0.3-0.5 euró között
+            reward = 0.3 + (random.NextDouble() * 0.2); // 0.3 + (0.0-0.2)
+        }
+        else
+        {
+            // Sima ölés: 0.1-0.3 euró között
+            reward = 0.1 + (random.NextDouble() * 0.2); // 0.1 + (0.0-0.2)
+        }
+
+        var newTotal = _playerCoins.AddOrUpdate(steamId, reward, (key, current) => current + reward);
 
         if (_config.Settings.AnnounceRewards)
         {
-            player.PrintToChat(_localizer["coins.kill_reward", $"{_config.Rewards.Kill:F2}", $"{newTotal:F2}"]);
+            var rewardType = isHeadshot ? "headshot" : "kill";
+            player.PrintToChat($" \x04[€]\x01 +€{reward:F2} {rewardType}");
         }
 
         // Azonnali mentés adatbázisba
         SavePlayerData(steamId, newTotal);
-        Console.WriteLine($"[SimpleCoinSystem] Player {player.PlayerName} earned €{_config.Rewards.Kill:F2} for kill. Total: €{newTotal:F2}");
+        Console.WriteLine($"[SimpleCoinSystem] Player {player.PlayerName} earned €{reward:F2} for {(isHeadshot ? "headshot" : "kill")}. Total: €{newTotal:F2}");
     }
 
     public void AddRoundWinReward(CCSPlayerController player)
@@ -422,14 +439,15 @@ public class SimpleCoinSystem : IDisposable
         var steamId = player.SteamID;
         var newTotal = _playerCoins.AddOrUpdate(steamId, _config.Rewards.RoundWin, (key, current) => current + _config.Rewards.RoundWin);
 
-        if (_config.Settings.AnnounceRewards)
-        {
-            player.PrintToChat(_localizer["coins.round_win", $"{_config.Rewards.RoundWin:F2}", $"{newTotal:F2}"]);
-        }
+        // Ne jelenítse meg a chatben
+        // if (_config.Settings.AnnounceRewards)
+        // {
+        //     player.PrintToChat(_localizer["coins.round_win", $"{_config.Rewards.RoundWin:F2}", $"{newTotal:F2}"]);
+        // }
 
         // Azonnali mentés adatbázisba
         SavePlayerData(steamId, newTotal);
-        Console.WriteLine($"[SimpleCoinSystem] Player {player.PlayerName} earned {_config.Rewards.RoundWin} coins for round win. Total: {newTotal}");
+        Console.WriteLine($"[SimpleCoinSystem] Player {player.PlayerName} earned €{_config.Rewards.RoundWin:F2} for round win. Total: €{newTotal:F2}");
     }
 
     public void AddRoundWinReward(List<CCSPlayerController> players)
@@ -447,14 +465,15 @@ public class SimpleCoinSystem : IDisposable
         var steamId = player.SteamID;
         var newTotal = _playerCoins.AddOrUpdate(steamId, _config.Rewards.Mvp, (key, current) => current + _config.Rewards.Mvp);
 
-        if (_config.Settings.AnnounceRewards)
-        {
-            player.PrintToChat(_localizer["coins.mvp_reward", $"{_config.Rewards.Mvp:F2}", $"{newTotal:F2}"]);
-        }
+        // Ne jelenítse meg a chatben
+        // if (_config.Settings.AnnounceRewards)
+        // {
+        //     player.PrintToChat(_localizer["coins.mvp_reward", $"{_config.Rewards.Mvp:F2}", $"{newTotal:F2}"]);
+        // }
 
         // Azonnali mentés adatbázisba
         SavePlayerData(steamId, newTotal);
-        Console.WriteLine($"[SimpleCoinSystem] Player {player.PlayerName} earned {_config.Rewards.Mvp} coins for MVP. Total: {newTotal}");
+        Console.WriteLine($"[SimpleCoinSystem] Player {player.PlayerName} earned €{_config.Rewards.Mvp:F2} for MVP. Total: €{newTotal:F2}");
     }
 
     public decimal GetPlayerCoins(ulong steamId)
