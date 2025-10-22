@@ -94,6 +94,12 @@ public partial class InventorySimulator
             {
                 _coinSystem.AddAssistReward(assister);
             }
+
+            // Case drop system (10% chance)
+            if (isValidAttacker && isValidVictimForCoins)
+            {
+                OnPlayerKilledForCaseDrop(attacker, victim);
+            }
         }
 
         return HookResult.Continue;

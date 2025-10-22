@@ -23,6 +23,9 @@ public partial class InventorySimulator
                 if (invsim_compatibility_mode.Value && invsim_spray_on_use.Value)
                     SprayPlayerGraffitiThruPlayerButtons(player);
             }
+
+        // Check for case pickups (10% drop chance on kill)
+        CheckCasePickupOnTick();
     }
 
     public void OnEntityCreated(CEntityInstance entity)
