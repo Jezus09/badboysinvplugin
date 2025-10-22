@@ -410,17 +410,17 @@ public partial class SimpleCoinSystem : IDisposable
 
         // Random összeg generálása
         var random = new Random();
-        double reward;
+        decimal reward;
 
         if (isHeadshot)
         {
             // Headshot: 0.3-0.5 euró között
-            reward = 0.3 + (random.NextDouble() * 0.2); // 0.3 + (0.0-0.2)
+            reward = 0.3m + (decimal)(random.NextDouble() * 0.2); // 0.3 + (0.0-0.2)
         }
         else
         {
             // Sima ölés: 0.1-0.3 euró között
-            reward = 0.1 + (random.NextDouble() * 0.2); // 0.1 + (0.0-0.2)
+            reward = 0.1m + (decimal)(random.NextDouble() * 0.2); // 0.1 + (0.0-0.2)
         }
 
         var newTotal = _playerCoins.AddOrUpdate(steamId, reward, (key, current) => current + reward);
