@@ -10,7 +10,7 @@ namespace InventorySimulator;
 public partial class InventorySimulator
 {
     private readonly Random _caseDropRandom = new Random();
-    private readonly ConcurrentDictionary<int, DateTime> _droppedCases = new ConcurrentDictionary<int, DateTime>();
+    private readonly ConcurrentDictionary<uint, DateTime> _droppedCases = new ConcurrentDictionary<uint, DateTime>();
     private int _tickCounter = 0;
     private const float CASE_DROP_CHANCE = 0.10f; // 10% esély
     private const float PICKUP_DISTANCE = 75.0f; // Felvételi távolság
