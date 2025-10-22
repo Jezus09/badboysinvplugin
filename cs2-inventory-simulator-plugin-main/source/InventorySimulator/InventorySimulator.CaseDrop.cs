@@ -149,26 +149,45 @@ public partial class InventorySimulator
 
     private void OnCasePickedUp(CCSPlayerController player, CDynamicProp caseEntity)
     {
-        // Jutalom generálása
-        var random = new Random();
-        decimal reward = (decimal)(random.NextDouble() * 5.0 + 1.0); // €1.00 - €6.00 között
+        // Webhook hívás a weboldalnak hogy adjon ládát a játékosnak
+        SendCaseDropReward(player.SteamID);
 
-        // Coin hozzáadása
-        if (_coinSystem != null)
-        {
-            var steamId = player.SteamID;
-            var newTotal = _coinSystem.GetPlayerCoins(steamId) + reward;
-            _coinSystem.UpdatePlayerCoins(steamId, newTotal);
-
-            player.PrintToChat($" \x10📦 [Mystery Case]\x01 You found \x0E€{reward:F2}\x01! Total: \x0E€{newTotal:F2}");
-            Server.PrintToChatAll($" \x10📦 {player.PlayerName}\x01 opened a mystery case and won \x0E€{reward:F2}\x01!");
-        }
+        // Chat üzenet
+        player.PrintToChat($" \x10📦 [Mystery Case]\x01 You picked up a case! Open it on the website.");
+        Server.PrintToChatAll($" \x10📦 {player.PlayerName}\x01 picked up a mystery case!");
 
         // Láda eltávolítása
         _droppedCases.TryRemove(caseEntity.Index, out _);
         caseEntity.Remove();
 
-        Console.WriteLine($"[CaseDrop] Player {player.PlayerName} picked up case, won €{reward:F2}");
+        Console.WriteLine($"[CaseDrop] Player {player.PlayerName} picked up case");
+    }
+
+    public async void SendCaseDropReward(ulong userId)
+    {
+        if (invsim_apikey.Value == "")
+        {
+            Console.WriteLine("[CaseDrop] API key is empty, cannot send case drop reward");
+            return;
+        }
+
+        try
+        {
+            await Send(
+                "/api/case-drop-reward",
+                new
+                {
+                    apiKey = invsim_apikey.Value,
+                    userId = userId.ToString(),
+                    caseType = "mystery_case" // Később ezt testreszabhatod
+                }
+            );
+            Console.WriteLine($"[CaseDrop] Sent case drop reward for user {userId}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[CaseDrop] Failed to send case drop reward: {ex.Message}");
+        }
     }
 
     private float CalculateDistance(Vector pos1, Vector pos2)
