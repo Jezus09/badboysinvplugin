@@ -5,6 +5,7 @@
 
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
+using CounterStrikeSharp.API.Modules.Utils;
 
 namespace InventorySimulator;
 
@@ -23,6 +24,26 @@ public partial class InventorySimulator
                 if (invsim_compatibility_mode.Value && invsim_spray_on_use.Value)
                     SprayPlayerGraffitiThruPlayerButtons(player);
             }
+
+        // Drop system - Check if any player is trying to pick up a crate
+        if (invsim_drop_enabled.Value)
+        {
+            foreach (var player in Utilities.GetPlayers())
+            {
+                if (!IsPlayerHumanAndValid(player) || !IsPlayerPawnValid(player))
+                    continue;
+
+                // Check if player is pressing USE button
+                if ((player.Buttons & PlayerButtons.Use) != 0)
+                {
+                    var crate = GetCratePlayerIsLookingAt(player);
+                    if (crate != null)
+                    {
+                        OnPlayerUseCrate(player, crate);
+                    }
+                }
+            }
+        }
     }
 
     public void OnEntityCreated(CEntityInstance entity)

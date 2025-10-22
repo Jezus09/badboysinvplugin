@@ -34,6 +34,16 @@ public partial class InventorySimulator
     public readonly FakeConVar<string> invsim_protocol = new("invsim_protocol", "Inventory Simulator API's protocol.", "https");
     public readonly FakeConVar<bool> invsim_wslogin = new("invsim_wslogin", "Not recommended, but allows authenticating into Inventory Simulator and printing login URL to the player.", false);
     public readonly FakeConVar<string> invsim_file = new("invsim_file", "File to load when plugin is loaded.", "inventories.json");
+
+    // Drop System ConVars
+    public readonly FakeConVar<bool> invsim_drop_enabled = new("invsim_drop_enabled", "Enable/disable the drop crate system.", true);
+    public readonly FakeConVar<float> invsim_drop_chance = new("invsim_drop_chance", "Chance (0-100) for a crate to drop on kill.", 25.0f);
+    public readonly FakeConVar<string> invsim_drop_model = new("invsim_drop_model", "Model path for drop crates.", "models/props_junk/wood_crate001a.vmdl");
+    public readonly FakeConVar<bool> invsim_drop_glow = new("invsim_drop_glow", "Enable glow effect on drop crates.", true);
+    public readonly FakeConVar<bool> invsim_drop_announce = new("invsim_drop_announce", "Announce when a crate drops.", true);
+    public readonly FakeConVar<float> invsim_drop_timeout = new("invsim_drop_timeout", "Time in seconds before a crate despawns.", 60.0f);
+    public readonly FakeConVar<float> invsim_drop_use_range = new("invsim_drop_use_range", "Maximum distance to pick up a crate.", 100.0f);
+    public readonly FakeConVar<bool> invsim_debug = new("invsim_debug", "Enable debug messages.", false);
     // csharpier-ignore-end
 
     public readonly ConcurrentDictionary<ulong, bool> FetchingPlayerInventory = [];
