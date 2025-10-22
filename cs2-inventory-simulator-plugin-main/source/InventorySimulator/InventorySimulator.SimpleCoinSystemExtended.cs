@@ -178,11 +178,11 @@ public partial class SimpleCoinSystem
         }
 
         // Show player's own rank if not in top
-        if (player.SteamID.HasValue && !topPlayers.Any(x => x.Key == player.SteamID))
+        if (player.SteamID != 0 && !topPlayers.Any(x => x.Key == player.SteamID))
         {
             var allPlayers = _playerCoins.OrderByDescending(x => x.Value).ToList();
             var playerRank = allPlayers.FindIndex(x => x.Key == player.SteamID) + 1;
-            var playerBalance = _playerCoins.GetValueOrDefault(player.SteamID.Value, 0);
+            var playerBalance = _playerCoins.GetValueOrDefault(player.SteamID, 0);
 
             player.PrintToChat($" \x08Your Rank:\x01 #{playerRank} - \x10€{playerBalance:F2}");
         }
