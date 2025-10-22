@@ -8,7 +8,7 @@ using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Utils;
 using System.Text.Json;
 using System.Net.Http;
-using CounterStrikeSharp.API.Modules.Entities;
+using System.Drawing;
 
 namespace InventorySimulator;
 
@@ -23,7 +23,7 @@ public partial class InventorySimulator
     private class DropCrate
     {
         public nint EntityHandle { get; set; }
-        public Vector DeathPosition { get; set; }
+        public Vector DeathPosition { get; set; } = null!;
         public ulong KillerSteamId { get; set; }
         public DateTime SpawnTime { get; set; }
     }
