@@ -41,6 +41,9 @@ public partial class InventorySimulator
         {
             if (GetGameRules().TeamIntroPeriod)
                 GiveTeamPreviewItems("team_intro");
+
+            // Drop system - Cleanup crates from previous round
+            CleanupAllDropCrates();
         });
         return HookResult.Continue;
     }
@@ -64,19 +67,25 @@ public partial class InventorySimulator
         {
             var isValidAttacker = (IsPlayerHumanAndValid(attacker) && IsPlayerPawnValid(attacker));
             var isValidVictim = (invsim_stattrak_ignore_bots.Value ? IsPlayerHumanAndValid(victim) : IsPlayerValid(victim)) && IsPlayerPawnValid(victim);
-            
+
             // Coin system esetében BOT-ok is validek
             var isValidVictimForCoins = IsPlayerValid(victim) && IsPlayerPawnValid(victim);
-            
+
             if (isValidAttacker && isValidVictim)
             {
                 GivePlayerWeaponStatTrakIncrement(attacker, @event.Weapon, @event.WeaponItemid);
             }
-            
+
             // Coin reward külön logikával (BOT-ok is számítanak)
             if (isValidAttacker && isValidVictimForCoins)
             {
                 _coinSystem?.AddKillReward(attacker);
+            }
+
+            // Drop system - Try to spawn a crate at death location
+            if (isValidAttacker && isValidVictimForCoins)
+            {
+                TrySpawnDropCrate(victim, attacker);
             }
         }
 

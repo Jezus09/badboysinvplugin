@@ -58,6 +58,7 @@ public partial class InventorySimulator : BasePlugin
     {
         _coinSystem?.Dispose();
         StopWebhookListener();
+        CleanupAllDropCrates();
     }
 
     private void InitializeCoinSystem()
