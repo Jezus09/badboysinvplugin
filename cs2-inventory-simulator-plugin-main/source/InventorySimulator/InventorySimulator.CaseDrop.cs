@@ -126,7 +126,7 @@ public partial class InventorySimulator
             // Keressünk közeli ládákat
             foreach (var caseEntry in _droppedCases.ToArray())
             {
-                var caseEntity = Utilities.GetEntityFromIndex<CDynamicProp>(caseEntry.Key);
+                var caseEntity = Utilities.GetEntityFromIndex<CDynamicProp>((int)caseEntry.Key);
                 if (caseEntity == null || !caseEntity.IsValid)
                 {
                     _droppedCases.TryRemove(caseEntry.Key, out _);
